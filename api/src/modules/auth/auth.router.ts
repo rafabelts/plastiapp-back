@@ -1,9 +1,10 @@
 import express, { Router } from "express";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
-import { LogInBodySchema, LogInSchema, RefreshTokenSchema } from "./auth.model";
+import { CreatedUserSchema, CreateUserSchema, LogInBodySchema, LogInSchema, RefreshTokenSchema } from "./auth.model";
 import { authController } from "./auth.controller";
 import { authenticateToken } from "@/common/middleware/authHandler";
+import { requireAdmin } from "@/common/middleware/requireAdmin";
 
 export const authRegister = new OpenAPIRegistry();
 export const authRouter: Router = express.Router();
@@ -43,6 +44,28 @@ authRegister.registerPath({
   responses: createApiResponse(RefreshTokenSchema, "Success"),
 });
 authRouter.post("/refresh", authController.refresh);
+
+
+// protected routes
+authRegister.registerPath({
+  method: "post",
+  description: "Create new user",
+  security: [{ bearerAuth: [] }],
+  path: "/api/auth/signup",
+  tags: ["Auth"],
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: CreateUserSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: createApiResponse(CreatedUserSchema, "Success"),
+});
+authRouter.post("/signup", authenticateToken, requireAdmin, authController.createUser);
 
 authRegister.registerPath({
   method: "post",

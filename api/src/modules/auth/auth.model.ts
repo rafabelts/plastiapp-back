@@ -22,3 +22,23 @@ export type RefreshToken = z.infer<typeof RefreshTokenSchema>;
 export const RefreshTokenSchema = z.object({
   accessToken: z.string()
 })
+
+export type CreatedUser = z.infer<typeof CreatedUserSchema>;
+export const CreatedUserSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string(),
+  password: z.string(),
+  birthDate: z.string(),
+  userTypeId: z.number(),
+  createdById: z.number(),
+});
+
+
+export type CreateUser = z.infer<typeof CreateUserSchema>;
+export const CreateUserSchema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  birthDate: z.string(),
+  userTypeId: z.number()
+});

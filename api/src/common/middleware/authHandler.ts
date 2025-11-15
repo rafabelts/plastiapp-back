@@ -1,19 +1,7 @@
-
 import type { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import { JwtPayload, verify } from "jsonwebtoken";
 import { env } from "../utils/envConfig";
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        userId: number;
-        type: string;
-      };
-    }
-  }
-}
 
 export function authenticateToken(req: Request,
   res: Response,

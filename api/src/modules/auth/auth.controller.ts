@@ -4,6 +4,19 @@ import { env } from "@/common/utils/envConfig";
 import { StatusCodes } from "http-status-codes";
 
 class AuthController {
+  async createUser(req: Request, res: Response) {
+    const {
+      name,
+      email,
+      birthDate,
+      userTypeId
+    } = req.body;
+    const userId = req.user!.userId;
+
+    const result = await authService.createUser(userId, { name, email, birthDate, userTypeId });
+    return res.status(result.statusCode).send(result);
+  }
+
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
     const result = await authService.login(email, password);

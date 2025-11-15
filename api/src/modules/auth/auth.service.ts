@@ -8,12 +8,49 @@ import { logger } from "@/server";
 import { log } from "console";
 import { hash } from "@/common/utils/hash";
 import { validateHash } from "@/common/utils/validateHash";
+import { CreateUser } from "./auth.model";
 
 
 class AuthService {
   private repo: AuthRepository;
   constructor(repo: AuthRepository = new AuthRepository()) {
     this.repo = repo;
+  }
+
+  async createUser(createdBy: number, payload: CreateUser) {
+    try {
+      const generatedPass = this.generatePassword(payload.name, payload.birthDate)
+      const pass = await hash(generatedPass);
+
+      const user = await this.repo.createUser(
+        {
+          name: payload.name,
+          email: payload.email,
+          password: pass,
+          birthDate: payload.birthDate,
+          userTypeId: payload.userTypeId,
+          createdById: createdBy
+        }
+      )
+
+      return ServiceResponse.success("User created", {
+        id: user.user_id,
+        name: user.name,
+        email: user.email,
+        password: generatedPass,
+        birthDate: user.birth_date,
+        userTypeId: user.user_type_id,
+        createdById: user.created_by_id
+      });
+    } catch (ex) {
+      const errorMessage = `Error creating user: ${(ex as Error).message}`;
+      logger.error(errorMessage);
+      return ServiceResponse.failure(
+        "An error ocurred while creating user",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      )
+    }
   }
 
   async login(email: string, password: string) {
@@ -46,6 +83,20 @@ class AuthService {
         StatusCodes.INTERNAL_SERVER_ERROR
       );
     }
+  }
+
+  generatePassword(name: string, birthDate: string) {
+    const normalizedName = this.normalizeName(name);
+    const [_, month, day] = birthDate.split("-");
+
+    const random = Math.floor(10 + Math.random() * 90);
+
+    return `${normalizedName}${day}${month}!${random}`;
+  }
+
+  normalizeName(name: string) {
+    const firstName = name.trim().split("")[0];
+    return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
   }
 
   async generateTokenPair(userId: number, type: string) {

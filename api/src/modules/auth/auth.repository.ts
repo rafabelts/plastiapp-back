@@ -9,6 +9,45 @@ export class AuthRepository {
     this.postgresDb = postgresDb;
   }
 
+  async createUser(payload: { name: string, email: string, password: string, birthDate: string, userTypeId: number, createdById: number }) {
+    const { rows } = await this.postgresDb.query(
+      `
+INSERT INTO "user" (
+name,
+email,
+password,
+birth_date,
+user_type_id,
+created_by_id
+)
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING user_id, name, email, birth_date, user_type_id, created_by_id
+`,
+      [payload.name, payload.email, payload.password,
+      payload.birthDate, payload.userTypeId, payload.createdById]
+    );
+
+    return rows[0] ?? null;
+  }
+
+  async getUserType(userId: number) {
+    const { rows } = await this.postgresDb.query(
+      `
+
+SELECT 
+  ut.name AS type  
+FROM 
+  user_type AS ut 
+  INNER JOIN "user" AS u 
+  ON ut.user_type_id = u.user_type_id 
+WHERE u.user_id = $1;
+`, [userId]
+    );
+
+    return rows[0] ?? null;
+  }
+
+
   async findCredentials(email: string) {
     const query = `
 SELECT
