@@ -1,0 +1,54 @@
+import dotenv from "dotenv";
+import { z } from "zod";
+
+dotenv.config();
+
+/*
+ JWT_SECRET="25fe0a63d72059abffa7235c7b7f8d26fe14ea1b55b0e8321d5dbfd412aab193733dbaa3a1f5dae835fd74d9c21d0c98637f8026ea68361494965986be41ac17"
+JWT_EXPIRES_IN="1h"
+
+JWT_REFRESH_SECRET="9886176b2d75e67b19d565e9cb6f205c4e38620181db190e43aa0d3e6c1746a7565dc502268145e8d429db143b9a876397eddd0f76e141b1796a43bc1da171bd"
+JWT_REFRESH_EXPIRES_IN="7d"
+ */
+
+const envSchema = z.object({
+	NODE_ENV: z.enum(["development", "production", "test"]).default("production"),
+
+	HOST: z.string().min(1).default("localhost"),
+
+	PORT: z.coerce.number().int().positive().default(8080),
+
+	CORS_ORIGIN: z.string().url().default("http://localhost:8080"),
+
+	COMMON_RATE_LIMIT_MAX_REQUESTS: z.coerce.number().int().positive().default(1000),
+
+	COMMON_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(1000),
+
+
+	DB_HOST: z.string().default(""),
+	DB_PORT: z.coerce.number().int().positive().default(5432),
+	DB_USER: z.string().default(""),
+	DB_PASSWORD: z.string().default(""),
+	DB_NAME: z.string().default(""),
+
+	JWT_SECRET: z.string(),
+	JWT_EXPIRES_IN: z.string().default("1h"),
+	JWT_REFRESH_SECRET: z.string(),
+	JWT_REFRESH_EXPIRES_IN: z.string().default("30d"),
+
+	SALT_ROUNDS: z.coerce.number().int().positive().default(10)
+});
+
+const parsedEnv = envSchema.safeParse(process.env);
+
+if (!parsedEnv.success) {
+	console.error("Invalid environment variables:", parsedEnv.error.format());
+	throw new Error("Invalid environment variables");
+}
+
+export const env = {
+	...parsedEnv.data,
+	isDevelopment: parsedEnv.data.NODE_ENV === "development",
+	isProduction: parsedEnv.data.NODE_ENV === "production",
+	isTest: parsedEnv.data.NODE_ENV === "test",
+};

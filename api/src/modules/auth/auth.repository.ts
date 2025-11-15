@@ -1,0 +1,68 @@
+import db from "@/common/core/database";
+import type { Pool } from "pg";
+
+export class AuthRepository {
+
+  private postgresDb: Pool;
+
+  constructor(postgresDb: Pool = db) {
+    this.postgresDb = postgresDb;
+  }
+
+  async findCredentials(email: string) {
+    const query = `
+SELECT
+u.user_id AS id,
+u.name,
+u.password,
+ut.name AS type
+FROM "user" AS u
+INNER JOIN user_type AS ut
+ON ut.user_type_id = u.user_type_id
+WHERE
+u.email = $1
+`;
+
+    const values = [email];
+    const { rows } = await this.postgresDb.query(query, values);
+    return rows[0] ?? '';
+  }
+
+  async saveRefreshToken(userId: number, tokenHash: string, expiresAt: Date) {
+    await this.postgresDb.query(
+      `INSERT INTO refresh_token (user_id, token_hash, expires_at)
+       VALUES ($1, $2, $3)`,
+      [userId, tokenHash, expiresAt]
+    );
+  }
+
+  async findRefreshTokens(userId: number) {
+    const { rows } = await this.postgresDb.query(
+      `SELECT 
+      rt.refresh_token_id,
+      rt.user_id,
+      rt.token_hash,
+      rt.expires_at,
+      rt.revoked_at,
+      ut.name AS user_type
+     FROM refresh_token rt
+     INNER JOIN "user" u ON u.user_id = rt.user_id
+     INNER JOIN user_type ut ON ut.user_type_id = u.user_type_id
+     WHERE rt.user_id = $1
+       AND rt.revoked_at IS NULL
+       AND rt.expires_at > NOW()`,
+      [userId]
+    );
+    return rows ?? null;
+  }
+
+  // Revoca todos los tokens del usuario (en tu caso, solo 1)
+  async revokeUserTokens(userId: number) {
+    await this.postgresDb.query(
+      `UPDATE refresh_token 
+       SET revoked_at = NOW() 
+       WHERE user_id = $1 AND revoked_at IS NULL`,
+      [userId]
+    );
+  }
+}
