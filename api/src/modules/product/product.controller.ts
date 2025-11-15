@@ -9,12 +9,13 @@ export class ProductController {
     const {
       name,
       description,
-      price
+      price,
+      categoryId
     } = req.body;
 
     const userId = req.user!.userId;
 
-    const result = await createProductUseCase.execute(userId, { name, description, price });
+    const result = await createProductUseCase.execute(userId, { name, description, price, categoryId });
     return res.status(result.statusCode).send(result);
   }
 

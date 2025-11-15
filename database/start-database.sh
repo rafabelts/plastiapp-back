@@ -90,6 +90,14 @@ if [ "$LOADED" = false ]; then
        ('weighing'),
        ('exchange');"
 
+  echo "Inserting default category rows..."
+  docker exec "$DB_CONTAINER_NAME" psql -U postgres -d "$DB_NAME" -c \
+    "INSERT INTO product_category (name)
+     VALUES
+       ('Alimentos'),
+       ('Salud y belleza');
+    "
+
   echo "Schema loaded successfully."
 fi
 

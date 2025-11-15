@@ -20,8 +20,8 @@ class CreateProductUseCase {
         id: product.product_id,
         name: product.name,
         description: product.description,
-        price: product.price
-
+        price: product.price,
+        category: product.category
       });
     } catch (ex) {
       const errorMessage = `Error creating user: ${(ex as Error).message}`;
