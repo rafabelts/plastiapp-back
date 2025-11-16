@@ -1,6 +1,6 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { Router } from "express";
-import { CategorySchema, CreateCategorySchema, GetCategorySchema } from "./category.model";
+import { CategorySchema, CreateCategorySchema, DeletedCategorySchema, GetCategorySchema } from "./category.model";
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 import { authenticateToken } from "@/common/middleware/authHandler";
 import { categoryController } from "./category.controller";
@@ -52,3 +52,36 @@ categoryRegistry.registerPath({
   responses: createApiResponse(CategorySchema, "Success"),
 });
 categoryRouter.get('/:id', authenticateToken, categoryController.getById);
+
+categoryRegistry.registerPath({
+  method: "put",
+  summary: "Updates an existing category",
+  security: [{ bearerAuth: [] }],
+  path: "/api/category/{id}",
+  tags: ["Category"],
+  request: {
+    params: GetCategorySchema.shape.params,
+    body: {
+      content: {
+        "application/json": {
+          schema: CreateCategorySchema,
+        },
+      },
+    },
+  },
+  responses: createApiResponse(CategorySchema, "Success"),
+});
+categoryRouter.put("/:id", authenticateToken, categoryController.update);
+
+categoryRegistry.registerPath({
+  method: "delete",
+  summary: "Deletes an existing category",
+  security: [{ bearerAuth: [] }],
+  path: "/api/category/{id}",
+  tags: ["Category"],
+  request: {
+    params: GetCategorySchema.shape.params,
+  },
+  responses: createApiResponse(DeletedCategorySchema, "Success"),
+});
+categoryRouter.delete("/:id", authenticateToken, categoryController.softDelete);

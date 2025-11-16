@@ -19,3 +19,9 @@ export const CreateCategorySchema = z.object({
 export const GetCategorySchema = z.object({
   params: z.object({ id: commonValidations.id }),
 })
+
+export type DeletedCategory = z.infer<typeof DeletedCategorySchema>;
+export const DeletedCategorySchema = z.object({
+  id: z.number(),
+  deletedAt: z.string()
+});
