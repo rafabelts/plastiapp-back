@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import { createPlasticUseCase } from "./useCases/CreatePlastic";
 import { getPlasticsUseCase } from "./useCases/GetPlastics";
 import { getPlasticUseCase } from "./useCases/GetPlastic";
+import { updatePlasticUseCase } from "./useCases/UpdatePlastic.usecase";
+import { softDeletePlasticUseCase } from "./useCases/SoftDeletePlastic.usecase";
 
 class PlasticController {
   async create(req: Request, res: Response) {
@@ -29,6 +31,32 @@ class PlasticController {
     const response = await getPlasticUseCase.execute(id);
     return res.status(response.statusCode).send(response);
   }
+
+  async update(req: Request, res: Response) {
+    const {
+      name,
+      description,
+      price
+    } = req.body;
+
+    const id = Number.parseInt(req.params.id as string, 10);
+
+    const response = await updatePlasticUseCase.execute(id, {
+      name,
+      description,
+      price
+    });
+    return res.status(response.statusCode).send(response);
+  }
+
+  async softDelete(req: Request, res: Response) {
+    const id = Number.parseInt(req.params.id as string, 10);
+
+    const response = await softDeletePlasticUseCase.execute(id);
+    return res.status(response.statusCode).send(response);
+  }
+
+
 }
 
 export const plasticController = new PlasticController();

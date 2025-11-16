@@ -1,6 +1,7 @@
 import db from "@/common/core/database";
 import type { Pool } from "pg";
 import { CreatePlastic } from "./plastic.model";
+import { a } from "vitest/dist/chunks/suite.d.FvehnV49";
 
 export class PlasticRepository {
   private postgresDb: Pool
@@ -72,7 +73,59 @@ RETURNING
     return rows[0] ?? "";
   }
 
+  async update(id: number, payload: Partial<CreatePlastic>) {
+    const updates: Array<string> = [];
+    const values: Array<unknown> = [];
+    let paramIndex = 1;
 
+    if (payload.name !== undefined) {
+      updates.push(`name = $${paramIndex++}`);
+      values.push(payload.name)
+    }
 
+    if (payload.description !== undefined) {
+      updates.push(`description = $${paramIndex++}`);
+      values.push(payload.description)
+    }
 
+    if (payload.price !== undefined) {
+      updates.push(`price = $${paramIndex++}`);
+      values.push(payload.price);
+    }
+
+    if (updates.length === 0) {
+      return null;
+    }
+
+    updates.push(`updated_at = (NOW() AT TIME ZONE 'America/Mexico_City')`);
+    values.push(id);
+
+    const { rows } = await this.postgresDb.query(
+      `
+UPDATE plastic
+SET ${updates.join(', ')}
+WHERE plastic_id = $${paramIndex}
+  AND deleted_at IS NULL
+RETURNING plastic_id
+`, values
+    );
+
+    return await this.getById(rows[0].product_id);
+  }
+
+  async softDelete(id: number) {
+    const { rows } = await this.postgresDb.query(
+      `
+UPDATE plastic
+SET
+  deleted_at = (NOW() AT TIME ZONE 'America/Mexico_City'),
+  updated_at = (NOW() AT TIME ZONE 'America/Mexico_City')
+WHERE plastic_id = $1
+  AND deleted_at IS NULL
+RETURNING plastic_id AS id, deleted_at AS "deletedAt"
+`, [id]
+    );
+
+    return rows[0] ?? null;
+  }
 }

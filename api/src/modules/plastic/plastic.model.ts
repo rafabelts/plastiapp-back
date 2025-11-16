@@ -21,3 +21,9 @@ export const CreatePlasticSchema = z.object({
 export const GetPlasticSchema = z.object({
   params: z.object({ id: commonValidations.id }),
 });
+
+export type DeletedPlastic = z.infer<typeof DeletedPlasticSchema>;
+export const DeletedPlasticSchema = z.object({
+  id: z.number(),
+  deletedAt: z.string()
+});

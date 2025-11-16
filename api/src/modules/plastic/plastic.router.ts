@@ -2,7 +2,7 @@ import { authenticateToken } from "@/common/middleware/authHandler";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { Router } from "express";
 import { plasticController } from "./plastic.controller";
-import { CreatePlasticSchema, GetPlasticSchema, PlasticSchema } from "./plastic.model";
+import { CreatePlasticSchema, DeletedPlasticSchema, GetPlasticSchema, PlasticSchema } from "./plastic.model";
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 import z from "zod";
 import { requireAdmin } from "@/common/middleware/requireAdmin";
@@ -58,3 +58,35 @@ plasticRegistry.registerPath({
 });
 plasticRouter.get("/:id", authenticateToken, plasticController.getById);
 
+plasticRegistry.registerPath({
+  method: "put",
+  summary: "Updates an existing plastic",
+  security: [{ bearerAuth: [] }],
+  path: "/api/plastic/{id}",
+  tags: ["Plastic"],
+  request: {
+    params: GetPlasticSchema.shape.params,
+    body: {
+      content: {
+        "application/json": {
+          schema: CreatePlasticSchema,
+        },
+      },
+    },
+  },
+  responses: createApiResponse(PlasticSchema, "Success"),
+});
+plasticRouter.put("/:id", authenticateToken, plasticController.update);
+
+plasticRegistry.registerPath({
+  method: "delete",
+  summary: "Deletes an existing plastic",
+  security: [{ bearerAuth: [] }],
+  path: "/api/plastic/{id}",
+  tags: ["Plastic"],
+  request: {
+    params: GetPlasticSchema.shape.params,
+  },
+  responses: createApiResponse(DeletedPlasticSchema, "Success"),
+});
+plasticRouter.delete("/:id", authenticateToken, plasticController.softDelete);
