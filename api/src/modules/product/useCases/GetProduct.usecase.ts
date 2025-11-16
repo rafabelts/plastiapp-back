@@ -18,12 +18,12 @@ class GetProductUseCase {
         return ServiceResponse.failure("Product not found", null, StatusCodes.NOT_FOUND)
       }
 
-      return ServiceResponse.success("Product found", product);
+      return ServiceResponse.success<Product>("Product found", product);
     } catch (ex) {
-      const errorMessage = `Error creating user: ${(ex as Error).message}`;
+      const errorMessage = `Error getting product: ${(ex as Error).message}`;
       logger.error(errorMessage);
       return ServiceResponse.failure(
-        "An error ocurred while creating user",
+        "An error ocurred while getting product",
         null,
         StatusCodes.INTERNAL_SERVER_ERROR
       );
@@ -31,4 +31,4 @@ class GetProductUseCase {
   }
 }
 
-export const getProductUseCase = new GetProductUseCase(new ProductRepository());
+export const getProductUseCase = new GetProductUseCase();

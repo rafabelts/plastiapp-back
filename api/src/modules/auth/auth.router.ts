@@ -1,4 +1,4 @@
-import express, { Router } from "express";
+import { Router } from "express";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 import { CreatedUserSchema, CreateUserSchema, LogInBodySchema, LogInSchema, RefreshTokenSchema } from "./auth.model";
@@ -7,7 +7,7 @@ import { authenticateToken } from "@/common/middleware/authHandler";
 import { requireAdmin } from "@/common/middleware/requireAdmin";
 
 export const authRegister = new OpenAPIRegistry();
-export const authRouter: Router = express.Router();
+export const authRouter: Router = Router();
 
 authRegister.registerComponent('securitySchemes', 'bearerAuth', {
   type: 'http',

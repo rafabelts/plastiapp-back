@@ -16,18 +16,12 @@ class CreateProductUseCase {
     try {
       const product = await this.repo.create(payload);
 
-      return ServiceResponse.success("Product created", {
-        id: product.product_id,
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        category: product.category
-      });
+      return ServiceResponse.success("Product created", product);
     } catch (ex) {
-      const errorMessage = `Error creating user: ${(ex as Error).message}`;
+      const errorMessage = `Error creating product: ${(ex as Error).message}`;
       logger.error(errorMessage);
       return ServiceResponse.failure(
-        "An error ocurred while creating user",
+        "An error ocurred while creating product",
         null,
         StatusCodes.INTERNAL_SERVER_ERROR
       )
@@ -35,6 +29,4 @@ class CreateProductUseCase {
   }
 }
 
-export const createProductUseCase = new CreateProductUseCase(
-  new ProductRepository()
-)
+export const createProductUseCase = new CreateProductUseCase()

@@ -18,8 +18,8 @@ SELECT
   p.description,
   p.price,
   pc.name AS category,
-  p.created_at,
-  p.updated_at
+  p.created_at AS "createdAt",
+  p.updated_at AS "updatedAt"
 FROM product p
 LEFT JOIN product_category pc ON p.category_id = pc.product_category_id
 WHERE p.deleted_at IS NULL
@@ -39,8 +39,8 @@ SELECT
   p.description,
   p.price,
   pc.name AS category,
-  p.created_at,
-  p.updated_at
+  p.created_at AS "createdAt", 
+  p.updated_at AS "updatedAt"
 FROM product p
 LEFT JOIN product_category pc ON p.category_id = pc.product_category_id
 WHERE p.product_id = $1
@@ -62,13 +62,13 @@ WHERE p.product_id = $1
 )
 VALUES ($1, $2, $3, $4)
 RETURNING 
-  product_id, 
+  product_id AS id, 
   name, 
   description, 
   price,
   category_id,
-  created_at,
-  updated_at
+  created_at AS "createdAt",
+  updated_at AS "updatedAt"
       `,
       [payload.name, payload.description, payload.price, payload.categoryId || null]
     );
@@ -85,16 +85,16 @@ RETURNING
     };
   }
 
-  /*
   async update(id: number, payload: Partial<CreateProduct>) {
-    const updates: string[] = [];
-    const values: any[] = [];
+    const updates: Array<string> = [];
+    const values: Array<unknown> = [];
     let paramIndex = 1;
 
     if (payload.name !== undefined) {
       updates.push(`name = $${paramIndex++}`);
       values.push(payload.name);
     }
+
     if (payload.description !== undefined) {
       updates.push(`description = $${paramIndex++}`);
       values.push(payload.description);
@@ -112,7 +112,7 @@ RETURNING
       return null;
     }
 
-    // Siempre actualizar updated_at
+    // update updated_at
     updates.push(`updated_at = (NOW() AT TIME ZONE 'America/Mexico_City')`);
     values.push(id);
 
@@ -129,24 +129,27 @@ RETURNING
       return null;
     }
 
-    // Retornar el producto actualizado con el nombre de la categoría
+    // return updated product
     return await this.getById(rows[0].product_id);
   }
 
   async softDelete(id: number) {
     const { rows } = await this.postgresDb.query(
-      `UPDATE product 
-       SET 
-         deleted_at = (NOW() AT TIME ZONE 'America/Mexico_City'),
-         updated_at = (NOW() AT TIME ZONE 'America/Mexico_City')
-       WHERE product_id = $1 
-         AND deleted_at IS NULL
-       RETURNING product_id, deleted_at`,
-      [id]
+      `
+UPDATE product
+SET
+  deleted_at = (NOW() AT TIME ZONE 'America/Mexico_City'),
+  updated_at = (NOW() AT TIME ZONE 'America/Mexico_City')
+WHERE product_id = $1
+  AND deleted_at IS NULL
+RETURNING product_id AS id, deleted_at AS "deletedAt"
+`, [id]
     );
+
     return rows[0] ?? null;
   }
 
+  /*
   // Obtener productos por categoría
   async getByCategoryId(categoryId: number) {
     const { rows } = await this.postgresDb.query(

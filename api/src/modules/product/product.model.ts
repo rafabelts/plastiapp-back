@@ -8,8 +8,14 @@ export const ProductSchema = z.object({
   description: z.string(),
   price: z.number(),
   category: z.string(),
-  created_at: z.string(),
-  updated_at: z.string()
+  createdAt: z.string(),
+  updatedAt: z.string()
+});
+
+export type DeletedProduct = z.infer<typeof DeletedProductSchema>;
+export const DeletedProductSchema = z.object({
+  id: z.number(),
+  deletedAt: z.string()
 });
 
 export type CreateProduct = z.infer<typeof CreateProductSchema>;

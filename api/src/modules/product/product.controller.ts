@@ -3,6 +3,8 @@ import { createProductUseCase } from "./useCases/CreateProduct.usecase";
 import { getProductsUseCase } from "./useCases/GetProducts.usecase";
 import { getProductUseCase } from "./useCases/GetProduct.usecase";
 import { logger } from "@/server";
+import { updateProductUseCase } from "./useCases/UpdateProduct.usecase";
+import { softDeleteProductUseCase } from "./useCases/SoftDelete.usecase";
 
 export class ProductController {
   async create(req: Request, res: Response) {
@@ -15,23 +17,47 @@ export class ProductController {
 
     const userId = req.user!.userId;
 
-    const result = await createProductUseCase.execute(userId, { name, description, price, categoryId });
-    return res.status(result.statusCode).send(result);
+    const response = await createProductUseCase.execute(userId, { name, description, price, categoryId });
+    return res.status(response.statusCode).send(response);
   }
 
   async getAll(req: Request, res: Response) {
     const response = await getProductsUseCase.execute();
-    res.status(response.statusCode).send(response);
+    return res.status(response.statusCode).send(response);
   }
 
   async getById(req: Request, res: Response) {
     const id = Number.parseInt(req.params.id as string, 10);
 
     const response = await getProductUseCase.execute(id);
-
-    res.status(response.statusCode).send(response);
+    return res.status(response.statusCode).send(response);
   }
 
+  async update(req: Request, res: Response) {
+    const {
+      name,
+      description,
+      price,
+      categoryId
+    } = req.body;
+
+    const id = Number.parseInt(req.params.id as string, 10);
+
+    const response = await updateProductUseCase.execute(id, {
+      name,
+      description,
+      price,
+      categoryId
+    });
+    return res.status(response.statusCode).send(response);
+  }
+
+  async softDelete(req: Request, res: Response) {
+    const id = Number.parseInt(req.params.id as string, 10);
+
+    const response = await softDeleteProductUseCase.execute(id);
+    return res.status(response.statusCode).send(response);
+  }
 }
 
 export const productController = new ProductController();

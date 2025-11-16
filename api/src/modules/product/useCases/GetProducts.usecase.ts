@@ -19,11 +19,12 @@ class GetProductsUseCase {
       }
 
       return ServiceResponse.success<Array<Product>>("Products found", products);
+
     } catch (ex) {
-      const errorMessage = `Error creating user: ${(ex as Error).message}`;
+      const errorMessage = `Error getting products: ${(ex as Error).message}`;
       logger.error(errorMessage);
       return ServiceResponse.failure(
-        "An error ocurred while creating user",
+        "An error ocurred while getting products",
         null,
         StatusCodes.INTERNAL_SERVER_ERROR
       );
@@ -31,4 +32,4 @@ class GetProductsUseCase {
   }
 }
 
-export const getProductsUseCase = new GetProductsUseCase(new ProductRepository());
+export const getProductsUseCase = new GetProductsUseCase();

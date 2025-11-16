@@ -109,6 +109,7 @@ CREATE TABLE plastic (
 CREATE TABLE product_category (
   product_category_id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
+  description TEXT,
   created_at TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'America/Mexico_City') NOT NULL,
   updated_at TIMESTAMP,
   deleted_at TIMESTAMP
