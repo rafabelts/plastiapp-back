@@ -1,4 +1,4 @@
-import rateLimit, { ipKeyGenerator } from "express-rate-limit";
+import rateLimit from "express-rate-limit";
 import { env } from "@/common/utils/envConfig";
 
 const rateLimiter = rateLimit({
@@ -8,8 +8,7 @@ const rateLimiter = rateLimit({
 	standardHeaders: true,
 	windowMs: 15 * 60 * env.COMMON_RATE_LIMIT_WINDOW_MS,
 	keyGenerator: (req, res) => {
-		const ip = ipKeyGenerator(req, res);
-		return `rl-${ip}`;
+		return `rl-${req.ip}`;
 	},
 });
 
