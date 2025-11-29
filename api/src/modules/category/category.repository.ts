@@ -77,11 +77,6 @@ RETURNING
       values.push(payload.name)
     }
 
-    if (payload.description !== undefined) {
-      updates.push(`description = $${paramIndex++}`);
-      values.push(payload.description)
-    }
-
     if (updates.length === 0) {
       return null;
     }

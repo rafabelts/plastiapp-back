@@ -5,7 +5,6 @@ export type Plastic = z.infer<typeof PlasticSchema>;
 export const PlasticSchema = z.object({
   id: z.number(),
   name: z.string(),
-  description: z.string(),
   price: z.number(),
   createdAt: z.string(),
   updatedAt: z.string()
@@ -14,7 +13,6 @@ export const PlasticSchema = z.object({
 export type CreatePlastic = z.infer<typeof CreatePlasticSchema>;
 export const CreatePlasticSchema = z.object({
   name: z.string(),
-  description: z.string().optional(),
   price: z.number()
 });
 

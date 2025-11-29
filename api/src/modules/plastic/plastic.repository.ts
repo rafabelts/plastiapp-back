@@ -16,7 +16,6 @@ export class PlasticRepository {
 SELECT
   plastic_id AS id,
   name,
-  description,
   price,
   created_at AS "createdAt",
   updated_at AS "updatedAt"
@@ -35,7 +34,6 @@ ORDER BY name ASC
 SELECT
   plastic_id AS id,
   name,
-  description,
   price,
   created_at AS "createdAt",
   updated_at AS "updatedAt"
@@ -54,21 +52,18 @@ WHERE
       `
 INSERT INTO plastic (
   name,
-  description,
   price
 ) VALUES (
   $1,
-  $2,
-  $3
+  $2
 )
 RETURNING 
   plastic_id, 
   name,
-  description, 
   price,
   created_at AS "createdAt",
   updated_at AS "updatedAt"
-`, [payload.name, payload.description, payload.price]
+`, [payload.name, payload.price]
     );
 
     return rows[0] ?? "";
@@ -82,11 +77,6 @@ RETURNING
     if (payload.name !== undefined) {
       updates.push(`name = $${paramIndex++}`);
       values.push(payload.name)
-    }
-
-    if (payload.description !== undefined) {
-      updates.push(`description = $${paramIndex++}`);
-      values.push(payload.description)
     }
 
     if (payload.price !== undefined) {

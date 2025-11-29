@@ -5,7 +5,6 @@ export type Category = z.infer<typeof CategorySchema>;
 export const CategorySchema = z.object({
   id: z.number(),
   name: z.string(),
-  description: z.string(),
   createdAt: z.string(),
   updatedAt: z.string()
 });
@@ -13,7 +12,6 @@ export const CategorySchema = z.object({
 export type CreateCategory = z.infer<typeof CreateCategorySchema>;
 export const CreateCategorySchema = z.object({
   name: z.string(),
-  description: z.string().optional(),
 });
 
 export const GetCategorySchema = z.object({

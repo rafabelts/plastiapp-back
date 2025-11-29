@@ -15,7 +15,6 @@ export class ProductRepository {
 SELECT
   p.product_id AS id,
   p.name,
-  p.description,
   p.price,
   pc.name AS category,
   pc.product_category_id AS "categoryId",
@@ -37,7 +36,6 @@ ORDER BY p.name ASC
 SELECT
   p.product_id AS id,
   p.name,
-  p.description,
   p.price,
   pc.name AS category,
   pc.product_category_id AS "categoryId",
@@ -58,21 +56,19 @@ WHERE p.product_id = $1
     const { rows } = await this.postgresDb.query(
       `INSERT INTO product (
   name,
-  description,
   price,
   category_id
 )
-VALUES ($1, $2, $3, $4)
+VALUES ($1, $2, $3)
 RETURNING 
   product_id AS id, 
   name, 
-  description, 
   price,
   category_id,
   created_at AS "createdAt",
   updated_at AS "updatedAt"
       `,
-      [payload.name, payload.description, payload.price, payload.categoryId || null]
+      [payload.name, payload.price, payload.categoryId || null]
     );
 
     // if category, returns product with category name 
@@ -97,10 +93,6 @@ RETURNING
       values.push(payload.name);
     }
 
-    if (payload.description !== undefined) {
-      updates.push(`description = $${paramIndex++}`);
-      values.push(payload.description);
-    }
     if (payload.price !== undefined) {
       updates.push(`price = $${paramIndex++}`);
       values.push(payload.price);
