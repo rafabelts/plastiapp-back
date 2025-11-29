@@ -16,13 +16,7 @@ class CreateCategoryUseCase {
     try {
       const category = await this.repo.create(payload);
 
-      return ServiceResponse.success("Category created", {
-        id: category.product_category_id,
-        category: category.name,
-        createdAt: category.created_at,
-        updatedAt: category.updated_at
-
-      });
+      return ServiceResponse.success("Category created", category);
     } catch (ex) {
       const errorMessage = `Error creating category: ${(ex as Error).message}`;
       logger.error(errorMessage);

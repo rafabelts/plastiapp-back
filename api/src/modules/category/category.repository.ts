@@ -14,13 +14,14 @@ export class CategoryRepository {
       `
 SELECT
   product_category_id AS id, 
-  name AS category,
+  name,
   created_at AS "createdAt",
   updated_at AS "updatedAt"
 FROM
   product_category
 WHERE
   deleted_at IS NULL
+ORDER BY name ASC
 `
     );
 
@@ -32,7 +33,7 @@ WHERE
       `
 SELECT
   product_category_id AS id,
-  name AS category,
+  name,
   created_at AS "createdAt",
   updated_at AS "updatedAt"
 FROM
@@ -55,7 +56,7 @@ INSERT INTO
 VALUES 
   ($1) 
 RETURNING 
-  product_category_id, 
+  product_category_id AS id, 
   name, 
   created_at AS "createdAt",
   updated_at AS "updatedAt"

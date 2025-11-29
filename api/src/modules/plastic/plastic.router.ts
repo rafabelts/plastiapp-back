@@ -76,7 +76,7 @@ plasticRegistry.registerPath({
   },
   responses: createApiResponse(PlasticSchema, "Success"),
 });
-plasticRouter.put("/:id", authenticateToken, plasticController.update);
+plasticRouter.put("/:id", authenticateToken, requireAdmin, plasticController.update);
 
 plasticRegistry.registerPath({
   method: "delete",

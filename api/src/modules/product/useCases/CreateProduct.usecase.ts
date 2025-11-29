@@ -16,6 +16,8 @@ class CreateProductUseCase {
     try {
       const product = await this.repo.create(payload);
 
+      logger.info(product);
+
       return ServiceResponse.success("Product created", product);
     } catch (ex) {
       const errorMessage = `Error creating product: ${(ex as Error).message}`;

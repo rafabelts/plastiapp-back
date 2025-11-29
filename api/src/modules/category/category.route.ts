@@ -71,7 +71,7 @@ categoryRegistry.registerPath({
   },
   responses: createApiResponse(CategorySchema, "Success"),
 });
-categoryRouter.put("/:id", authenticateToken, categoryController.update);
+categoryRouter.put("/:id", authenticateToken, requireAdmin, categoryController.update);
 
 categoryRegistry.registerPath({
   method: "delete",

@@ -23,6 +23,7 @@ SELECT
 FROM plastic
 WHERE
   deleted_at IS NULL
+ORDER BY name ASC
 `);
 
     return rows ?? null;

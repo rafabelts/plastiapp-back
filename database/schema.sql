@@ -98,7 +98,6 @@ CREATE TABLE barter (
 CREATE TABLE plastic (
   plastic_id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
-  description TEXT,
   price NUMERIC(10,2) NOT NULL,
   created_at TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'America/Mexico_City') NOT NULL,
   updated_at TIMESTAMP,
@@ -109,7 +108,6 @@ CREATE TABLE plastic (
 CREATE TABLE product_category (
   product_category_id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
-  description TEXT,
   created_at TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'America/Mexico_City') NOT NULL,
   updated_at TIMESTAMP,
   deleted_at TIMESTAMP
@@ -119,7 +117,6 @@ CREATE TABLE product_category (
 CREATE TABLE product (
   product_id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
-  description TEXT,
   price NUMERIC(10,2) NOT NULL,
   category_id INT,
   created_at TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'America/Mexico_City') NOT NULL,
@@ -172,6 +169,7 @@ CREATE TABLE event_has_barter (
 CREATE TABLE event_has_plastic(
   event_id INT NOT NULL,
   plastic_id INT NOT NULL,
+  price NUMERIC(10,2) NOT NULL,
   created_at TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'America/Mexico_City') NOT NULL,
   updated_at TIMESTAMP,
   deleted_at TIMESTAMP,
@@ -185,6 +183,7 @@ CREATE TABLE event_has_product(
   event_id INT NOT NULL,
   product_id INT NOT NULL,
   quantity INT NOT NULL,
+  price NUMERIC(10,2) NOT NULL,
   created_at TIMESTAMP DEFAULT (NOW() AT TIME ZONE 'America/Mexico_City') NOT NULL,
   updated_at TIMESTAMP,
   deleted_at TIMESTAMP,

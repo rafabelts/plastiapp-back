@@ -79,7 +79,7 @@ productRegistry.registerPath({
   },
   responses: createApiResponse(ProductSchema, "Success"),
 });
-productRouter.put("/:id", authenticateToken, productController.update);
+productRouter.put("/:id", authenticateToken, requireAdmin, productController.update);
 
 productRegistry.registerPath({
   method: "delete",

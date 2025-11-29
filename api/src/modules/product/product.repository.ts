@@ -18,13 +18,14 @@ SELECT
   p.description,
   p.price,
   pc.name AS category,
+  pc.product_category_id AS "categoryId",
   p.created_at AS "createdAt",
   p.updated_at AS "updatedAt"
 FROM product p
 LEFT JOIN product_category pc ON p.category_id = pc.product_category_id
 WHERE p.deleted_at IS NULL
   AND (pc.deleted_at IS NULL OR pc.product_category_id IS NULL)
-ORDER BY p.created_at DESC
+ORDER BY p.name ASC
       `
     );
     return rows ?? null;
@@ -39,6 +40,7 @@ SELECT
   p.description,
   p.price,
   pc.name AS category,
+  pc.product_category_id AS "categoryId",
   p.created_at AS "createdAt", 
   p.updated_at AS "updatedAt"
 FROM product p
@@ -75,7 +77,7 @@ RETURNING
 
     // if category, returns product with category name 
     if (rows[0] && rows[0].category_id) {
-      return await this.getById(rows[0].product_id);
+      return await this.getById(rows[0].id);
     }
 
     // else, returns category = null
