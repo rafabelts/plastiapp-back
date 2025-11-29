@@ -10,14 +10,13 @@ export class ProductController {
   async create(req: Request, res: Response) {
     const {
       name,
-      description,
       price,
       categoryId
     } = req.body;
 
     const userId = req.user!.userId;
 
-    const response = await createProductUseCase.execute(userId, { name, description, price, categoryId });
+    const response = await createProductUseCase.execute(userId, { name, price, categoryId });
     return res.status(response.statusCode).send(response);
   }
 
@@ -36,7 +35,6 @@ export class ProductController {
   async update(req: Request, res: Response) {
     const {
       name,
-      description,
       price,
       categoryId
     } = req.body;
@@ -45,7 +43,6 @@ export class ProductController {
 
     const response = await updateProductUseCase.execute(id, {
       name,
-      description,
       price,
       categoryId
     });

@@ -10,12 +10,11 @@ export class CategoryController {
   async create(req: Request, res: Response) {
     const {
       name,
-      description
     } = req.body;
 
     const userId = req.user!.userId;
 
-    const response = await createCategoryUseCase.execute(userId, { name, description });
+    const response = await createCategoryUseCase.execute(userId, { name });
     return res.status(response.statusCode).send(response);
   }
 
@@ -34,14 +33,12 @@ export class CategoryController {
   async update(req: Request, res: Response) {
     const {
       name,
-      description
     } = req.body;
 
     const id = Number.parseInt(req.params.id as string, 10);
 
     const response = await updateCategoryUseCase.execute(id, {
-      name,
-      description
+      name
     });
     return res.status(response.statusCode).send(response);
   }

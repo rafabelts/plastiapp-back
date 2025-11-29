@@ -9,13 +9,12 @@ class PlasticController {
   async create(req: Request, res: Response) {
     const {
       name,
-      description,
       price
     } = req.body;
 
     const userId = req.user!.userId;
 
-    const response = await createPlasticUseCase.execute(userId, { name, description, price });
+    const response = await createPlasticUseCase.execute(userId, { name, price });
 
     return res.status(response.statusCode).send(response);
   }
@@ -35,7 +34,6 @@ class PlasticController {
   async update(req: Request, res: Response) {
     const {
       name,
-      description,
       price
     } = req.body;
 
@@ -43,7 +41,6 @@ class PlasticController {
 
     const response = await updatePlasticUseCase.execute(id, {
       name,
-      description,
       price
     });
     return res.status(response.statusCode).send(response);
