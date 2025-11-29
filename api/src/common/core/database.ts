@@ -8,6 +8,7 @@ const db = new Pool({
   user: env.DB_USER,
   password: env.DB_PASSWORD,
   database: env.DB_NAME,
+  ssl: env.isProduction ? { rejectUnauthorized: false } : undefined,
 });
 
 export async function validateDBConnection() {
