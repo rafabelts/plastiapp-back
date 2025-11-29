@@ -21,7 +21,8 @@ export function authenticateToken(req: Request,
 
     req.user = {
       userId: decoded.userId,
-      type: decoded.type
+      type: decoded.type,
+      typeId: decoded.typeId
     };
 
     next();

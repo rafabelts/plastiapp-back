@@ -5,6 +5,7 @@ declare global {
     interface UserPayload {
       userId: number;
       type: UserType;
+      typeId: number;
     }
 
     interface Request {

@@ -49,8 +49,9 @@ SELECT
   u.user_id AS id,
   u.name,
   u.password,
-  ut.name AS type
-FROM "user" AS u
+  ut.name AS type,
+  u.user_type_id AS "typeId"
+FROM "user" AS u 
 INNER JOIN user_type AS ut
   ON ut.user_type_id = u.user_type_id
 WHERE

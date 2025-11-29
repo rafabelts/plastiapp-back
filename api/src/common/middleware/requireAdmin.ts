@@ -1,6 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 
+import { UserRoles } from "../constants/roles";
+
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   const user = req.user;
 
@@ -10,7 +12,7 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
       .json({ message: "User is not authenticated" });
   }
 
-  if (user.type !== "admin") {
+  if (user.typeId !== UserRoles.ADMIN) {
     return res
       .status(StatusCodes.FORBIDDEN) // más correcto que 401 aquí
       .json({ message: "User doesn't have authorization to perform this action" });

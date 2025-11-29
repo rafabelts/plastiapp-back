@@ -61,11 +61,11 @@ class AuthService {
       const isValid = await validateHash(password, user["password"]);
       if (!isValid) return ServiceResponse.failure("Invalid password", null, StatusCodes.UNAUTHORIZED);
 
-      const { id, name, type } = user;
+      const { id, name, type, typeId } = user;
 
       await this.repo.revokeUserTokens(id);
 
-      const tokens = await this.generateTokenPair(id, type);
+      const tokens = await this.generateTokenPair(id, type, typeId);
 
       return ServiceResponse.success("User authenticated", {
         id,
@@ -99,15 +99,15 @@ class AuthService {
     return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
   }
 
-  async generateTokenPair(userId: number, type: string) {
+  async generateTokenPair(userId: number, type: string, typeId: number) {
     const accessToken = sign(
-      { userId, type },
+      { userId, type, typeId },
       env.JWT_SECRET,
       { expiresIn: env.JWT_EXPIRES_IN as SignOptions["expiresIn"] }
     );
 
     const refreshToken = sign(
-      { userId, type, tokenType: 'refresh' },
+      { userId, type, typeId, tokenType: 'refresh' },
       env.JWT_REFRESH_SECRET, // 
       { expiresIn: '7d' }
     );
@@ -125,7 +125,7 @@ class AuthService {
 
   async refreshAccessToken(refreshToken: string) {
     try {
-      const decoded = verify(refreshToken, env.JWT_REFRESH_SECRET) as { userId: number, type: string };
+      const decoded = verify(refreshToken, env.JWT_REFRESH_SECRET) as { userId: number, type: string, typeId: number };
 
       const userTokens = await this.repo.findRefreshTokens(decoded.userId);
       if (!userTokens || userTokens.length === 0) {
@@ -150,7 +150,7 @@ class AuthService {
       }
 
       const accessToken = sign(
-        { userId: decoded.userId, type: decoded.type },
+        { userId: decoded.userId, type: decoded.type, typeId: decoded.typeId },
         env.JWT_SECRET,
         { expiresIn: env.JWT_EXPIRES_IN as SignOptions["expiresIn"] }
       );
