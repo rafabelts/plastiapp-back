@@ -21,7 +21,16 @@ app.set("trust proxy", true);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+
+// Cors config
+app.use(cors({
+    origin: env.CORS_ORIGIN, credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+app.options("*", cors());
+
 app.use(helmet());
 app.use(rateLimiter);
 
