@@ -3,14 +3,6 @@ import { z } from "zod";
 
 dotenv.config();
 
-/*
- JWT_SECRET="25fe0a63d72059abffa7235c7b7f8d26fe14ea1b55b0e8321d5dbfd412aab193733dbaa3a1f5dae835fd74d9c21d0c98637f8026ea68361494965986be41ac17"
-JWT_EXPIRES_IN="1h"
-
-JWT_REFRESH_SECRET="9886176b2d75e67b19d565e9cb6f205c4e38620181db190e43aa0d3e6c1746a7565dc502268145e8d429db143b9a876397eddd0f76e141b1796a43bc1da171bd"
-JWT_REFRESH_EXPIRES_IN="7d"
- */
-
 const envSchema = z.object({
 	NODE_ENV: z.enum(["development", "production", "test"]).default("production"),
 
