@@ -31,6 +31,11 @@ app.use(requestLogger);
 // doc
 app.use(openAPIRouter)
 
+// Redirect / to /api/docs
+app.get("/", (_req, res) => {
+    res.redirect("/api/docs");
+});
+
 // Routes
 registerApiRoutes(app, appRouter);
 
