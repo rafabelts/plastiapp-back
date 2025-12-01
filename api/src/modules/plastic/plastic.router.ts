@@ -8,7 +8,7 @@ import z from "zod";
 import { requireAdmin } from "@/common/middleware/requireAdmin";
 
 export const plasticRegistry = new OpenAPIRegistry();
-export const plasticRouter = Router();
+export const plasticRouter: Router = Router();
 
 plasticRegistry.registerComponent('securitySchemes', 'bearerAuth', {
   type: 'http',
